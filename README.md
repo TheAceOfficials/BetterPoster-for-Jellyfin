@@ -41,6 +41,8 @@ For the plugin to take effect, you must restart your Jellyfin server.
 
 ## How to Configure & Use
 
+### Enable for Libraries
+
 Once installed and the server is restarted, you need to enable the plugin for your libraries so it can fetch the posters.
 
 1. Go to **Dashboard** > **Libraries**.
@@ -52,6 +54,15 @@ Once installed and the server is restarted, you need to enable the plugin for yo
 
 Now, when you add new media or manually choose to **Refresh Metadata** (by selecting "Replace existing images"), Jellyfin will look for posters from Btttr.cc and apply them automatically!
 
+
+### Plugin Settings
+
+Configure poster options (optional):
+
+1. Go to **Dashboard** > **Plugins**.
+2. Under **Installed**, click **Btttr Posters**.
+3. Click **Settings** and update the configuration options (trend tags, ratings, language, etc.). See [btttr.cc/configure](https://btttr.cc/configure) for details on each option.
+4. Click **Save**.
+
 ## Troubleshooting
 - **No poster applied?** Make sure your media has a valid IMDb ID in its metadata. The plugin relies entirely on the IMDb ID (`ttXXXXXXX`) to fetch the correct poster from Btttr.cc. You can check this by editing the metadata of your movie/show.
-- **Plugin settings empty?** This plugin works silently in the background as an Image Provider. The settings page might appear blank or unconfigurable, which is completely normal. Configuration is done on a per-library basis.
