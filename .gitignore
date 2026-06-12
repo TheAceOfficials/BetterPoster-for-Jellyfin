@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+.tmp/
+jellyfin-btttr-plugin/bin/
+jellyfin-btttr-plugin/obj/

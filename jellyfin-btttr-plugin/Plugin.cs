@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
@@ -29,7 +30,10 @@ namespace Jellyfin.Plugin.BtttrPosters
                 new PluginPageInfo
                 {
                     Name = "Btttr Posters Configuration",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.configPage.html"
+                    EmbeddedResourcePath = string.Format(
+                        CultureInfo.InvariantCulture,
+                        "{0}.Configuration.configPage.html",
+                        GetType().Namespace)
                 }
             };
         }

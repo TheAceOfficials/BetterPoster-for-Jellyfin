@@ -5,42 +5,173 @@
     <title>Btttr Posters Configuration</title>
 </head>
 <body>
-    <div id="BtttrPostersConfigPage" class="page type-interior pluginConfigurationPage" data-require="emby-button,emby-input,emby-select">
-        <div class="content-primary">
-            <form id="BtttrPostersConfigForm">
-                <div class="sectionTitleContainer flex align-items-center justify-content-between">
-                    <h2 class="sectionTitle">Btttr Posters Configuration</h2>
-                </div>
+    <div id="BtttrPostersConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="BtttrPostersConfigForm">
+                    <div class="sectionTitleContainer flex align-items-center">
+                        <h2 class="sectionTitle">Btttr Posters Configuration</h2>
+                    </div>
 
-                <div class="verticalFormContainer">
-                    <div class="selectContainer">
-                        <label for="selectLayout">Default Poster Layout Badge Style</label>
-                        <select is="emby-select" id="selectLayout" name="LayoutStyle" class="emby-select">
-                            <option value="poster-default">Standard Default (Trending Pill)</option>
-                            <option value="poster-no-badge">No Top Badge (Only Bottom Description)</option>
-                            <option value="poster-rating-only">Rating Only / Empty Top</option>
-                        </select>
-                        <div class="fieldDescription">
-                            Select the default theme structure format to pull from btttr.cc endpoints.
+                    <p class="fieldDescription" style="margin-bottom: 1.5em;">
+                        Configure poster overlays to match the options at
+                        <a href="https://btttr.cc/configure" target="_blank" rel="noopener">btttr.cc/configure</a>.
+                    </p>
+
+                    <h3 class="sectionTitle">Poster Options</h3>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input is="emby-checkbox" type="checkbox" id="chkTrendTags" />
+                            <span>Trend Tags</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Trending, New, IMDb rank badges at the top.
                         </div>
                     </div>
 
                     <div class="checkboxContainer checkboxContainer-withDescription">
-                        <label>
-                            <input is="emby-checkbox" type="checkbox" id="chkFallback" name="FallbackToTmdbText" />
-                            <span>Fallback if ID query lacks details</span>
+                        <label class="emby-checkbox-label">
+                            <input is="emby-checkbox" type="checkbox" id="chkQualityTags" />
+                            <span>Quality Tags</span>
                         </label>
                         <div class="fieldDescription checkboxFieldDescription">
-                            Enable automatic fallback if metadata keys are missing.
+                            4K, Dolby Vision, and Atmos badges.
                         </div>
                     </div>
 
-                    <button is="emby-button" type="submit" class="raised button-submit block emby-button">
-                        <span>Save Configuration</span>
-                    </button>
-                </div>
-            </form>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input is="emby-checkbox" type="checkbox" id="chkShowGenre" />
+                            <span>Genre</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Genre label at the bottom of the poster.
+                        </div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input is="emby-checkbox" type="checkbox" id="chkShowRating" />
+                            <span>Rating</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Star rating at the bottom of the poster.
+                        </div>
+                    </div>
+
+                    <div class="selectContainer" id="ratingSourceContainer">
+                        <label class="selectLabel" for="selectRatingSource">Rating Source</label>
+                        <select is="emby-select" id="selectRatingSource" class="emby-select-withcolor emby-select">
+                            <option value="avg">Average</option>
+                            <option value="IM">IMDb (/10)</option>
+                            <option value="TM">TMDB (/10)</option>
+                            <option value="RT">Rotten Tomatoes (%)</option>
+                            <option value="MC">Metacritic (/100)</option>
+                            <option value="TR">Trakt (/10)</option>
+                            <option value="LB">Letterboxd (/5)</option>
+                            <option value="RE">Roger Ebert (/4)</option>
+                        </select>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input is="emby-checkbox" type="checkbox" id="chkAgeRating" />
+                            <span>Age Rating</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            PG-13, TV-MA, R, and similar content ratings.
+                        </div>
+                    </div>
+
+                    <h3 class="sectionTitle">Language</h3>
+
+                    <div class="selectContainer">
+                        <label class="selectLabel" for="selectLanguage">Poster Language</label>
+                        <select is="emby-select" id="selectLanguage" class="emby-select-withcolor emby-select">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="de">Deutsch</option>
+                            <option value="pt-BR">Português (Brasil)</option>
+                            <option value="pt-PT">Português (Portugal)</option>
+                            <option value="it">Italiano</option>
+                            <option value="nl">Nederlands</option>
+                            <option value="pl">Polski</option>
+                            <option value="ru">Русский</option>
+                            <option value="tr">Türkçe</option>
+                            <option value="ar">العربية</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                            <option value="zh">中文</option>
+                            <option value="hi">हिन्दी</option>
+                            <option value="sv">Svenska</option>
+                            <option value="cs">Čeština</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                            <span>Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
+        <script type="text/javascript">
+            var BtttrPostersConfig = {
+                pluginUniqueId: 'b1ea6fb2-e42a-4632-841f-82ffba8307db'
+            };
+
+            function updateRatingSourceVisibility() {
+                var showRating = document.querySelector('#chkShowRating').checked;
+                document.querySelector('#ratingSourceContainer').style.display = showRating ? '' : 'none';
+            }
+
+            function loadConfiguration() {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(BtttrPostersConfig.pluginUniqueId).then(function (config) {
+                    document.querySelector('#chkTrendTags').checked = config.TrendTags !== false;
+                    document.querySelector('#chkQualityTags').checked = !!config.QualityTags;
+                    document.querySelector('#chkShowGenre').checked = config.ShowGenre !== false;
+                    document.querySelector('#chkShowRating').checked = config.ShowRating !== false;
+                    document.querySelector('#chkAgeRating').checked = !!config.AgeRating;
+                    document.querySelector('#selectRatingSource').value = config.RatingSource || 'avg';
+                    document.querySelector('#selectLanguage').value = config.Language || 'en';
+                    updateRatingSourceVisibility();
+                    Dashboard.hideLoadingMsg();
+                }).catch(function () {
+                    Dashboard.hideLoadingMsg();
+                });
+            }
+
+            document.querySelector('#BtttrPostersConfigPage')
+                .addEventListener('pageshow', loadConfiguration);
+
+            document.querySelector('#chkShowRating')
+                .addEventListener('change', updateRatingSourceVisibility);
+
+            document.querySelector('#BtttrPostersConfigForm')
+                .addEventListener('submit', function (e) {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(BtttrPostersConfig.pluginUniqueId).then(function (config) {
+                        config.TrendTags = document.querySelector('#chkTrendTags').checked;
+                        config.QualityTags = document.querySelector('#chkQualityTags').checked;
+                        config.ShowGenre = document.querySelector('#chkShowGenre').checked;
+                        config.ShowRating = document.querySelector('#chkShowRating').checked;
+                        config.AgeRating = document.querySelector('#chkAgeRating').checked;
+                        config.RatingSource = document.querySelector('#selectRatingSource').value;
+                        config.Language = document.querySelector('#selectLanguage').value;
+                        ApiClient.updatePluginConfiguration(BtttrPostersConfig.pluginUniqueId, config)
+                            .then(Dashboard.processPluginConfigurationUpdateResult);
+                    }).catch(function () {
+                        Dashboard.hideLoadingMsg();
+                    });
+
+                    e.preventDefault();
+                    return false;
+                });
+        </script>
     </div>
 </body>
 </html>

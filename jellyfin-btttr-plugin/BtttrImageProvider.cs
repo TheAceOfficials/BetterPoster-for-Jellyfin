@@ -10,6 +10,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
+using Jellyfin.Plugin.BtttrPosters.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.BtttrPosters
@@ -61,13 +62,8 @@ namespace Jellyfin.Plugin.BtttrPosters
                 imdbId = "tt" + imdbId;
             }
 
-            // Standard layout is 'poster-default'. Other choices can be injected.
-            var layout = Plugin.Instance?.Configuration?.LayoutStyle ?? "poster-default";
-
-            // Generate Btttr.cc URL
-            // Format: https://btttr.cc/poster/imdb/{layout}/{imdb_id}.jpg
-            // Example: https://btttr.cc/poster/imdb/poster-default/tt10919420.jpg
-            string btttrUrl = $"https://btttr.cc/poster/imdb/{layout}/{imdbId}.jpg";
+            var config = Plugin.Instance?.Configuration ?? new PluginConfiguration();
+            string btttrUrl = BtttrPosterUrlBuilder.Build(imdbId, config);
 
             _logger.LogInformation("Generating Btttr.cc URL format: {Url}", btttrUrl);
 
