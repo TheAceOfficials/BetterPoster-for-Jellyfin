@@ -1,0 +1,94 @@
+name: Build Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build and package plugin
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore and build
+        run: |
+          dotnet restore jellyfin-btttr-plugin/BtttrPosterPlugin.csproj
+          dotnet build jellyfin-btttr-plugin/BtttrPosterPlugin.csproj -c Release --no-restore
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+          else
+            TAG="v$(grep -oPm1 '(?<=<Version>)[^<]+' jellyfin-btttr-plugin/BtttrPosterPlugin.csproj)"
+          fi
+          TAG="${TAG#v}"
+          # Assembly version is often 1.0.0.0; release tags/zip names use 1.0.0.
+          TAG="${TAG%.0}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "zip_name=BtttrPosters_v${TAG}.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Package release ZIP
+        id: package
+        run: |
+          ZIP_NAME="${{ steps.version.outputs.zip_name }}"
+
+          mkdir -p dist
+          cp jellyfin-btttr-plugin/bin/Release/net8.0/Jellyfin.Plugin.BtttrPosters.dll dist/
+          (cd dist && zip -r "../${ZIP_NAME}" .)
+
+          CHECKSUM=$(md5sum "${ZIP_NAME}" | awk '{print toupper($1)}')
+          echo "${CHECKSUM}  ${ZIP_NAME}" > "${ZIP_NAME}.md5"
+
+          echo "checksum=${CHECKSUM}" >> "$GITHUB_OUTPUT"
+          echo "Built ${ZIP_NAME} (MD5: ${CHECKSUM})"
+
+      - name: Upload to GitHub Release
+        if: github.event_name == 'release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            "${{ steps.version.outputs.zip_name }}" \
+            "${{ steps.version.outputs.zip_name }}.md5" \
+            --clobber
+
+      - name: Upload workflow artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: BtttrPosters-release
+          path: |
+            ${{ steps.version.outputs.zip_name }}
+            ${{ steps.version.outputs.zip_name }}.md5
+
+      - name: Summary
+        run: |
+          {
+            echo "### Release package"
+            echo "- **ZIP:** \`${{ steps.version.outputs.zip_name }}\`"
+            echo "- **MD5:** \`${{ steps.package.outputs.checksum }}\`"
+            echo ""
+            echo "Add to \`manifest.json\` when publishing:"
+            echo '```json'
+            echo "{"
+            echo "  \"version\": \"${{ steps.version.outputs.tag }}\","
+            echo "  \"targetAbi\": \"10.9.0.0\","
+            echo "  \"sourceUrl\": \"https://github.com/${{ github.repository }}/releases/download/v${{ steps.version.outputs.tag }}/${{ steps.version.outputs.zip_name }}\","
+            echo "  \"checksum\": \"${{ steps.package.outputs.checksum }}\""
+            echo "}"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
