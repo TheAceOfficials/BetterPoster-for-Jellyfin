@@ -36,8 +36,6 @@ jobs:
             TAG="v$(grep -oPm1 '(?<=<Version>)[^<]+' jellyfin-btttr-plugin/BtttrPosterPlugin.csproj)"
           fi
           TAG="${TAG#v}"
-          # Assembly version is often 1.0.0.0; release tags/zip names use 1.0.0.
-          TAG="${TAG%.0}"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "zip_name=BtttrPosters_v${TAG}.zip" >> "$GITHUB_OUTPUT"
 
