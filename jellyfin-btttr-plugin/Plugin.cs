@@ -28,7 +28,7 @@ namespace Jellyfin.Plugin.BtttrPosters
             {
                 new PluginPageInfo
                 {
-                    Name = this.Name,
+                    Name = this.Name + " Configuration",
                     EmbeddedResourcePath = GetType().Namespace + ".Configuration.configPage.html"
                 }
             };
