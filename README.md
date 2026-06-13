@@ -1,5 +1,9 @@
 # BetterPosters for Jellyfin
 
+<p align="center">
+  <img src="cover.png" alt="BetterPosters Cover Art" width="100%">
+</p>
+
 ![Jellyfin Plugin](https://img.shields.io/badge/Jellyfin-Plugin-blueviolet?style=for-the-badge&logo=jellyfin)
 ![Version](https://img.shields.io/badge/Version-2.0.0-success?style=for-the-badge)
 

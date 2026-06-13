@@ -6,6 +6,7 @@
     "description": "This plugin adds Btttr.cc as an Official Remote Image Provider in Jellyfin. When you search for images (posters) for any movie or TV series, Btttr.cc covers will automatically appear as top-priority choices.",
     "owner": "TheAceOfficials",
     "category": "Metadata",
+    "imageUrl": "https://raw.githubusercontent.com/TheAceOfficials/BetterPoster-for-Jellyfin/main/cover.png",
     "versions": [
       {
         "version": "2.0.0.0",
