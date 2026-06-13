@@ -1,0 +1,28 @@
+[
+  {
+    "guid": "b1ea6fb2-e42a-4632-841f-82ffba8307db",
+    "name": "Btttr Posters Plugin",
+    "overview": "Automatically pull beautifully styled poster cards from btttr.cc into Jellyfin.",
+    "description": "This plugin adds Btttr.cc as an Official Remote Image Provider in Jellyfin. When you search for images (posters) for any movie or TV series, Btttr.cc covers will automatically appear as top-priority choices.",
+    "owner": "TheAceOfficials",
+    "category": "Metadata",
+    "versions": [
+      {
+        "version": "2.0.0.0",
+        "changelog": "V2.0.0: Fixed API endpoints, Added Poster Language selection, TMDB ID fallback support.",
+        "targetAbi": "10.9.0.0",
+        "sourceUrl": "https://github.com/TheAceOfficials/BetterPoster-for-Jellyfin/releases/download/v2.0.0/BtttrPosters.zip",
+        "checksum": "",
+        "timestamp": "2026-06-13T00:00:00Z"
+      },
+      {
+        "version": "1.0.0.0",
+        "changelog": "Initial Release. Support for IMDb ID btttr.cc poster overlays.",
+        "targetAbi": "10.9.0.0",
+        "sourceUrl": "https://github.com/TheAceOfficials/BetterPoster-for-Jellyfin/releases/download/v1.0.0/BtttrPosters.zip",
+        "checksum": "",
+        "timestamp": "2026-06-11T00:00:00Z"
+      }
+    ]
+  }
+]
