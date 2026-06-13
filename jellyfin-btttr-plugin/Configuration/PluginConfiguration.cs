@@ -6,5 +6,6 @@ namespace Jellyfin.Plugin.BtttrPosters.Configuration
     {
         public string PosterLanguage { get; set; } = "en";
         public bool FallbackToTmdbText { get; set; } = true;
+        public string LayoutStyle { get; set; } = "poster-default";
     }
 }

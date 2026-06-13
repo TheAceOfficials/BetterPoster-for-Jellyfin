@@ -1,0 +1,13 @@
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\Jellyfin.Plugin.BtttrPosters.deps.json
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\Jellyfin.Plugin.BtttrPosters.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\Jellyfin.Plugin.BtttrPosters.pdb
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\obj\Release\net8.0\BtttrPosterPlugin.csproj.AssemblyReference.cache
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\obj\Release\net8.0\BtttrPosterPlugin.GeneratedMSBuildEditorConfig.editorconfig
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\obj\Release\net8.0\BtttrPosterPlugin.AssemblyInfoInputs.cache
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\obj\Release\net8.0\BtttrPosterPlugin.AssemblyInfo.cs
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\obj\Release\net8.0\BtttrPosterPlugin.csproj.CoreCompileInputs.cache
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\obj\Release\net8.0\BtttrPosterPlugin.sourcelink.json
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\obj\Release\net8.0\Jellyfin.Plugin.BtttrPosters.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\obj\Release\net8.0\refint\Jellyfin.Plugin.BtttrPosters.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\obj\Release\net8.0\Jellyfin.Plugin.BtttrPosters.pdb
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\obj\Release\net8.0\ref\Jellyfin.Plugin.BtttrPosters.dll

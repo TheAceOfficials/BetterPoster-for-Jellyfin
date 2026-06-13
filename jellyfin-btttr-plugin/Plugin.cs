@@ -28,8 +28,10 @@ namespace Jellyfin.Plugin.BtttrPosters
             {
                 new PluginPageInfo
                 {
+                    // This name MUST match what Jellyfin requests in the URL:
+                    // /web/configurationpage?name=Btttr+Posters+Configuration
                     Name = this.Name + " Configuration",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.configPage.html"
+                    EmbeddedResourcePath = $"{GetType().Namespace}.Configuration.configPage.html"
                 }
             };
         }
