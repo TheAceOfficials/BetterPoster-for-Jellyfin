@@ -1,0 +1,73 @@
+<div id="BtttrPostersConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-button,emby-input,emby-select,emby-checkbox">
+    <div data-role="content">
+        <div class="content-primary">
+            <form id="BtttrPostersConfigForm">
+                    <div class="sectionTitleContainer flex align-items-center justify-content-between">
+                        <h2 class="sectionTitle">Btttr Posters Configuration</h2>
+                    </div>
+
+                    <div class="verticalFormContainer">
+                        <div class="selectContainer">
+                            <label for="selectPosterLanguage">Poster Language</label>
+                            <select is="emby-select" id="selectPosterLanguage" name="PosterLanguage" class="emby-select">
+                                <option value="none">Disabled (No language parameter)</option>
+                                <option value="en">English (EN)</option>
+                                <option value="hi">Hindi (HI)</option>
+                                <option value="ja">Japanese (JA)</option>
+                                <option value="es">Spanish (ES)</option>
+                                <option value="fr">French (FR)</option>
+                                <option value="de">German (DE)</option>
+                            </select>
+                            <div class="fieldDescription">
+                                Select the language for the posters fetched from Btttr.cc.
+                            </div>
+                        </div>
+
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="chkFallback" name="FallbackToTmdbText" />
+                                <span>Fallback to TMDB if IMDb ID is missing</span>
+                            </label>
+                            <div class="fieldDescription checkboxFieldDescription">
+                                Enable automatic fallback to TMDB ID if IMDb ID is not found.
+                            </div>
+                        </div>
+
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                            <span>Save Configuration</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var BtttrPostersConfig = {
+                pluginUniqueId: 'b1ea6fb2-e42a-4632-841f-82ffba8307db'
+            };
+
+            document.querySelector('#BtttrPostersConfigPage').addEventListener('pageshow', function () {
+                var page = this;
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(BtttrPostersConfig.pluginUniqueId).then(function (config) {
+                    page.querySelector('#selectPosterLanguage').value = config.PosterLanguage || 'en';
+                    page.querySelector('#chkFallback').checked = config.FallbackToTmdbText !== false;
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+
+            document.querySelector('#BtttrPostersConfigForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                var form = this;
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(BtttrPostersConfig.pluginUniqueId).then(function (config) {
+                    config.PosterLanguage = form.querySelector('#selectPosterLanguage').value;
+                    config.FallbackToTmdbText = form.querySelector('#chkFallback').checked;
+
+                    ApiClient.updatePluginConfiguration(BtttrPostersConfig.pluginUniqueId, config).then(function (result) {
+                        Dashboard.processPluginConfigurationUpdateResult(result);
+                    });
+                });
+            });
+        </script>
+    </div>
