@@ -86,9 +86,20 @@ namespace Jellyfin.Plugin.BtttrPosters
             string itemType = item is Movie ? "movie" : "series";
 
             // Generate Btttr.cc URL
-            // Format: https://btttr.cc/poster/{itemType}/{targetId}/auto~{lang}.png
-            string langSuffix = (langBadge == "none" || string.IsNullOrEmpty(langBadge)) ? "" : $"~{langBadge}";
-            string btttrUrl = $"https://btttr.cc/poster/{itemType}/{targetId}/auto{langSuffix}.png";
+            // Format: https://btttr.cc/poster/{itemType}/{targetId}/auto~gr.png?lang={lang}
+            string btttrUrl = $"https://btttr.cc/poster/{itemType}/{targetId}/auto~gr.png";
+
+            var queryParams = new List<string>();
+
+            if (langBadge != "none" && !string.IsNullOrEmpty(langBadge))
+            {
+                queryParams.Add($"lang={Uri.EscapeDataString(langBadge)}");
+            }
+
+            if (queryParams.Count > 0)
+            {
+                btttrUrl += "?" + string.Join("&", queryParams);
+            }
 
             _logger.LogInformation("Generating Btttr.cc URL format: {Url}", btttrUrl);
 

@@ -62,7 +62,12 @@
                         config.PosterLanguage = form.querySelector('#selectPosterLanguage').value;
                         config.FallbackToTmdbText = form.querySelector('#chkFallback').checked;
                         ApiClient.updatePluginConfiguration(pluginUniqueId, config).then(function (result) {
-                            Dashboard.processPluginConfigurationUpdateResult(result);
+                            Dashboard.hideLoadingMsg();
+                            if (window.Dashboard && Dashboard.processServerConfigurationUpdateResult) {
+                                Dashboard.processServerConfigurationUpdateResult(result);
+                            }
+                        }).catch(function() {
+                            Dashboard.hideLoadingMsg();
                         });
                     });
                 });
