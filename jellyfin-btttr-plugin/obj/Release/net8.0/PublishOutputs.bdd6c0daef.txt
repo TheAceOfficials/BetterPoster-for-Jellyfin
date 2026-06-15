@@ -1,0 +1,16 @@
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\Jellyfin.Plugin.BtttrPosters.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\Jellyfin.Plugin.BtttrPosters.deps.json
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\Jellyfin.Plugin.BtttrPosters.pdb
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\Diacritics.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\ICU4N.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\ICU4N.Transliterator.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\J2N.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\MediaBrowser.Common.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\MediaBrowser.Controller.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\Jellyfin.Data.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\Jellyfin.Extensions.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\MediaBrowser.Model.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\Emby.Naming.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\Microsoft.Extensions.Configuration.Binder.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\bin\Release\net8.0\publish\Microsoft.Extensions.Logging.Abstractions.dll

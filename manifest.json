@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/TheAceOfficials/BetterPoster-for-Jellyfin/main/cover.png",
     "versions": [
       {
+        "version": "3.0.0.0",
+        "changelog": "V3.0.0 Release: Full btttr.cc integration. Added Trend Tags, Quality Tags, Genre Overlays, Ratings (IMDb, TMDB, RottenTomatoes etc), Age Ratings, and 18 Language translations.",
+        "targetAbi": "10.9.0.0",
+        "sourceUrl": "https://github.com/TheAceOfficials/BetterPoster-for-Jellyfin/releases/download/v3.0.0/BtttrPosters.zip",
+        "checksum": "",
+        "timestamp": "2026-06-15T00:00:00Z"
+      },
+      {
         "version": "2.0.0.0",
         "changelog": "V2.0.0: Fixed API endpoints, Added Poster Language selection, TMDB ID fallback support.",
         "targetAbi": "10.9.0.0",

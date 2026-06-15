@@ -11,6 +11,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
+using Jellyfin.Plugin.BtttrPosters.Configuration;
 
 namespace Jellyfin.Plugin.BtttrPosters
 {
@@ -80,20 +81,40 @@ namespace Jellyfin.Plugin.BtttrPosters
                 return Task.FromResult<IEnumerable<RemoteImageInfo>>(images);
             }
 
-            var langBadge = Plugin.Instance?.Configuration?.PosterLanguage ?? "en";
+            var config = Plugin.Instance?.Configuration ?? new PluginConfiguration();
 
-            // Determine item type for URL (movie or series)
-            string itemType = item is Movie ? "movie" : "series";
+            string suffix = config.EnableGenre switch
+            {
+                true when config.EnableRating => string.Empty,
+                false when config.EnableRating => "r",
+                true => "g",
+                false => "n"
+            };
 
-            // Generate Btttr.cc URL
-            // Format: https://btttr.cc/poster/{itemType}/{targetId}/auto~gr.png?lang={lang}
-            string btttrUrl = $"https://btttr.cc/poster/{itemType}/{targetId}/auto~gr.png";
+            if (config.EnableQualityTags) suffix += "q";
+            if (config.EnableAgeRating) suffix += "a";
+
+            string path = string.IsNullOrEmpty(suffix) ? "poster" : "poster-" + suffix;
+            
+            string btttrUrl = $"https://btttr.cc/{path}/{idType}/poster-default/{Uri.EscapeDataString(targetId)}.jpg";
 
             var queryParams = new List<string>();
 
-            if (langBadge != "none" && !string.IsNullOrEmpty(langBadge))
+            if (!config.EnableTrendTags)
             {
-                queryParams.Add($"lang={Uri.EscapeDataString(langBadge)}");
+                queryParams.Add("tag=none");
+            }
+
+            string languageCode = GetLanguageCode(config.Language);
+            if (!string.IsNullOrEmpty(languageCode))
+            {
+                queryParams.Add($"lang={Uri.EscapeDataString(languageCode)}");
+            }
+
+            string ratingSourceCode = GetRatingSourceCode(config.RatingSource);
+            if (config.EnableRating && !string.IsNullOrEmpty(ratingSourceCode))
+            {
+                queryParams.Add($"rs={Uri.EscapeDataString(ratingSourceCode)}");
             }
 
             if (queryParams.Count > 0)
@@ -119,6 +140,48 @@ namespace Jellyfin.Plugin.BtttrPosters
             _logger.LogInformation("Fetching custom poster from Btttr: {Url}", url);
             var client = _httpClientFactory.CreateClient(Name);
             return client.GetAsync(url, cancellationToken);
+        }
+
+        private static string GetLanguageCode(PosterLanguage language)
+        {
+            return language switch
+            {
+                PosterLanguage.English => null,
+                PosterLanguage.Spanish => "es",
+                PosterLanguage.French => "fr",
+                PosterLanguage.German => "de",
+                PosterLanguage.PortugueseBrazil => "pt-BR",
+                PosterLanguage.PortuguesePortugal => "pt-PT",
+                PosterLanguage.Italian => "it",
+                PosterLanguage.Dutch => "nl",
+                PosterLanguage.Polish => "pl",
+                PosterLanguage.Russian => "ru",
+                PosterLanguage.Turkish => "tr",
+                PosterLanguage.Arabic => "ar",
+                PosterLanguage.Japanese => "ja",
+                PosterLanguage.Korean => "ko",
+                PosterLanguage.Chinese => "zh",
+                PosterLanguage.Hindi => "hi",
+                PosterLanguage.Swedish => "sv",
+                PosterLanguage.Czech => "cs",
+                _ => null
+            };
+        }
+
+        private static string GetRatingSourceCode(PosterRatingSource ratingSource)
+        {
+            return ratingSource switch
+            {
+                PosterRatingSource.Average => null,
+                PosterRatingSource.Imdb => "IM",
+                PosterRatingSource.Tmdb => "TM",
+                PosterRatingSource.RottenTomatoes => "RT",
+                PosterRatingSource.Metacritic => "MC",
+                PosterRatingSource.Trakt => "TR",
+                PosterRatingSource.Letterboxd => "LB",
+                PosterRatingSource.RogerEbert => "RE",
+                _ => null
+            };
         }
     }
 }

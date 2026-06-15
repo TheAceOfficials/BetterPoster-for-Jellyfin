@@ -3,24 +3,96 @@
         <div class="content-primary">
             <form id="BtttrPostersConfigForm">
                 <div class="sectionTitleContainer flex align-items-center justify-content-between">
-                    <h2 class="sectionTitle">Btttr Posters - Configuration</h2>
+                    <h2 class="sectionTitle">Poster Options</h2>
                 </div>
 
                 <div class="verticalFormContainer">
-                    <div class="selectContainer">
-                        <label for="selectPosterLanguage">Poster Language</label>
-                        <select is="emby-select" id="selectPosterLanguage" name="PosterLanguage" class="emby-select">
-                            <option value="none">Disabled (No language parameter)</option>
-                            <option value="en">English (EN)</option>
-                            <option value="hi">Hindi (HI)</option>
-                            <option value="ja">Japanese (JA)</option>
-                            <option value="es">Spanish (ES)</option>
-                            <option value="fr">French (FR)</option>
-                            <option value="de">German (DE)</option>
-                        </select>
-                        <div class="fieldDescription">
-                            Select the preferred poster language fetched from Btttr.cc.
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="chkTrendTags" name="EnableTrendTags" />
+                            <span>Trend Tags</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Trending, New, IMDb #3
                         </div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="chkQualityTags" name="EnableQualityTags" />
+                            <span>Quality Tags</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            4K, Dolby Vision, Atmos badges
+                        </div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="chkGenre" name="EnableGenre" />
+                            <span>Genre</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Genre label at bottom
+                        </div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="chkRatings" name="EnableRating" />
+                            <span>Ratings</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Star rating at bottom
+                        </div>
+                    </div>
+
+                    <div class="selectContainer">
+                        <label for="selectRatingSource">Ratings Source</label>
+                        <select is="emby-select" id="selectRatingSource" name="RatingSource" class="emby-select">
+                            <option value="Average">Average</option>
+                            <option value="Imdb">IMDb</option>
+                            <option value="Tmdb">TMDB</option>
+                            <option value="RottenTomatoes">Rotten Tomatoes</option>
+                            <option value="Metacritic">Metacritic</option>
+                            <option value="Trakt">Trakt</option>
+                            <option value="Letterboxd">Letterboxd</option>
+                            <option value="RogerEbert">Roger Ebert</option>
+                        </select>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="chkAgeRating" name="EnableAgeRating" />
+                            <span>Age Rating</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            PG-13, TV-MA, R
+                        </div>
+                    </div>
+
+                    <div class="selectContainer">
+                        <label for="selectLanguage">Language</label>
+                        <select is="emby-select" id="selectLanguage" name="Language" class="emby-select">
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="French">French</option>
+                            <option value="German">German</option>
+                            <option value="PortugueseBrazil">Portuguese (Brazil)</option>
+                            <option value="PortuguesePortugal">Portuguese (Portugal)</option>
+                            <option value="Italian">Italian</option>
+                            <option value="Dutch">Dutch</option>
+                            <option value="Polish">Polish</option>
+                            <option value="Russian">Russian</option>
+                            <option value="Turkish">Turkish</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="Korean">Korean</option>
+                            <option value="Chinese">Chinese</option>
+                            <option value="Hindi">Hindi</option>
+                            <option value="Swedish">Swedish</option>
+                            <option value="Czech">Czech</option>
+                        </select>
                     </div>
 
                     <div class="checkboxContainer checkboxContainer-withDescription">
@@ -34,7 +106,7 @@
                     </div>
 
                     <button is="emby-button" type="submit" class="raised button-submit block emby-button">
-                        <span>Save Configuration</span>
+                        <span>Save</span>
                     </button>
                 </div>
             </form>
@@ -48,7 +120,13 @@
                     var page = this;
                     Dashboard.showLoadingMsg();
                     ApiClient.getPluginConfiguration(pluginUniqueId).then(function (config) {
-                        page.querySelector('#selectPosterLanguage').value = config.PosterLanguage || 'en';
+                        page.querySelector('#chkTrendTags').checked = config.EnableTrendTags;
+                        page.querySelector('#chkQualityTags').checked = config.EnableQualityTags;
+                        page.querySelector('#chkGenre').checked = config.EnableGenre;
+                        page.querySelector('#chkRatings').checked = config.EnableRating;
+                        page.querySelector('#selectRatingSource').value = config.RatingSource || 'Average';
+                        page.querySelector('#chkAgeRating').checked = config.EnableAgeRating;
+                        page.querySelector('#selectLanguage').value = config.Language || 'English';
                         page.querySelector('#chkFallback').checked = config.FallbackToTmdbText !== false;
                         Dashboard.hideLoadingMsg();
                     });
@@ -59,8 +137,15 @@
                     var form = this;
                     Dashboard.showLoadingMsg();
                     ApiClient.getPluginConfiguration(pluginUniqueId).then(function (config) {
-                        config.PosterLanguage = form.querySelector('#selectPosterLanguage').value;
+                        config.EnableTrendTags = form.querySelector('#chkTrendTags').checked;
+                        config.EnableQualityTags = form.querySelector('#chkQualityTags').checked;
+                        config.EnableGenre = form.querySelector('#chkGenre').checked;
+                        config.EnableRating = form.querySelector('#chkRatings').checked;
+                        config.RatingSource = form.querySelector('#selectRatingSource').value;
+                        config.EnableAgeRating = form.querySelector('#chkAgeRating').checked;
+                        config.Language = form.querySelector('#selectLanguage').value;
                         config.FallbackToTmdbText = form.querySelector('#chkFallback').checked;
+
                         ApiClient.updatePluginConfiguration(pluginUniqueId, config).then(function (result) {
                             Dashboard.hideLoadingMsg();
                             if (window.Dashboard && Dashboard.processServerConfigurationUpdateResult) {
