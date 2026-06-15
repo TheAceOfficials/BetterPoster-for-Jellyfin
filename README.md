@@ -5,14 +5,16 @@
 </p>
 
 ![Jellyfin Plugin](https://img.shields.io/badge/Jellyfin-Plugin-blueviolet?style=for-the-badge&logo=jellyfin)
-![Version](https://img.shields.io/badge/Version-2.0.0-success?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.0-success?style=for-the-badge)
 
-**BetterPosters** is an automated metadata and image provider plugin for Jellyfin. It seamlessly integrates with [btttr.cc](https://btttr.cc) to fetch high-quality, premium custom posters for your Movies and TV Shows. These posters feature curated designs with integrated **Rating and Genre** overlay badges, giving your library a polished and modern streaming-service aesthetic.
+**BetterPosters** is an automated metadata and image provider plugin for Jellyfin. It seamlessly integrates with [btttr.cc](https://btttr.cc) to fetch high-quality, premium custom posters for your Movies and TV Shows. These posters feature curated designs with highly customizable overlays, giving your library a polished and modern streaming-service aesthetic.
 
 ## ✨ Features
 
-* **Premium Poster Overlays:** Automatically fetches gorgeous, pre-styled posters featuring Genre and Rating badges.
-* **Multi-Language Support:** Choose the language for the poster text/badges directly from the Jellyfin Dashboard (Supports English, Hindi, Japanese, Spanish, French, German, etc.).
+* **Premium Poster Overlays:** Automatically fetches gorgeous, pre-styled posters featuring detailed badges and overlays.
+* **Fully Customizable:** Toggle Trend Tags (Trending, New, IMDb #3), Quality Tags (4K, Dolby Vision, Atmos), Genre, Ratings, and Age Ratings (PG-13, TV-MA, R) to your liking.
+* **Multiple Rating Sources:** Choose your preferred rating source including Average, IMDb, TMDB, Rotten Tomatoes, Metacritic, Trakt, Letterboxd, and Roger Ebert.
+* **18 Languages Supported:** Choose from a wide variety of languages for your poster text and badges (English, Hindi, Japanese, Spanish, French, German, and many more).
 * **Smart ID Fallbacks:** Attempts to match using the IMDb ID first. If missing, it automatically falls back to the TMDB ID.
 * **Native Integration:** Acts as an official Remote Image Provider. No external scripts or cron jobs required!
 
@@ -42,13 +44,15 @@ Installing the plugin is incredibly simple using Jellyfin's built-in plugin repo
 
 ## ⚙️ Configuration & Setup
 
-Once installed and the server is restarted, you can configure the plugin:
+Once installed and the server is restarted, you can completely customize how your posters look:
 
 1. Go to **Dashboard** -> **Plugins** -> **My Plugins**.
 2. Click on **Btttr Posters**.
-3. **Poster Language:** Select your preferred language for the posters. (If you select *Disabled*, it will fetch the default language-less poster).
-4. **Fallback to TMDB:** Keep this checked to ensure you get posters even if the media lacks an IMDb ID.
-5. Click **Save Configuration**.
+3. **Poster Options:** Toggle the checkboxes for **Trend Tags**, **Quality Tags**, **Genre**, **Ratings**, and **Age Rating** to customize the overlays on your posters.
+4. **Ratings Source:** Select which rating service you want displayed on the poster (e.g., IMDb, Rotten Tomatoes, TMDB, etc.).
+5. **Language:** Select your preferred language for the poster text.
+6. **Fallback to TMDB:** Keep this checked to ensure you get posters even if the media lacks an IMDb ID.
+7. Click **Save**.
 
 ---
 
