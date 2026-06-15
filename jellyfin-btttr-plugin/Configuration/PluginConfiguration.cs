@@ -36,26 +36,8 @@ namespace Jellyfin.Plugin.BtttrPosters.Configuration
         Czech
     }
 
-    public enum PosterEngineMode
-    {
-        BtttrCc,
-        NativeDynamic
-    }
-
     public class PluginConfiguration : BasePluginConfiguration
     {
-        // Engine Selection
-        public PosterEngineMode EngineMode { get; set; } = PosterEngineMode.BtttrCc;
-
-        // API Keys for Native Engine
-        public string TmdbApiKey { get; set; } = string.Empty;
-        public string FanartTvApiKey { get; set; } = string.Empty;
-
-        // Dynamic Rotation
-        public bool EnableDynamicRotation { get; set; } = false;
-        public int RotationIntervalDays { get; set; } = 7;
-
-        // Btttr.cc Options (Shared)
         public bool EnableTrendTags { get; set; } = true;
         public bool EnableQualityTags { get; set; } = false;
         public bool EnableGenre { get; set; } = true;

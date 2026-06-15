@@ -3,56 +3,7 @@
         <div class="content-primary">
             <form id="BtttrPostersConfigForm">
                 <div class="sectionTitleContainer flex align-items-center justify-content-between">
-                    <h2 class="sectionTitle">Engine Selection & API Keys</h2>
-                </div>
-                
-                <div class="verticalFormContainer">
-                    <div class="selectContainer">
-                        <label for="selectEngineMode">Poster Generation Engine</label>
-                        <select is="emby-select" id="selectEngineMode" name="EngineMode" class="emby-select">
-                            <option value="BtttrCc">Btttr.cc API (Cloud)</option>
-                            <option value="NativeDynamic">Native Dynamic Engine (Local + API Keys)</option>
-                        </select>
-                        <div class="fieldDescription">Choose whether to use the Btttr.cc cloud service or generate custom higher-quality posters locally.</div>
-                    </div>
-
-                    <div class="inputContainer">
-                        <label for="txtTmdbApiKey">TMDB API Key</label>
-                        <input is="emby-input" type="text" id="txtTmdbApiKey" name="TmdbApiKey" class="emby-input" />
-                        <div class="fieldDescription">Required for the Native Dynamic Engine to fetch raw background posters.</div>
-                    </div>
-
-                    <div class="inputContainer">
-                        <label for="txtFanartApiKey">Fanart.tv API Key (Optional)</label>
-                        <input is="emby-input" type="text" id="txtFanartApiKey" name="FanartTvApiKey" class="emby-input" />
-                        <div class="fieldDescription">Used to fetch clear logos for posters if using the Native Engine.</div>
-                    </div>
-                </div>
-
-                <div class="sectionTitleContainer flex align-items-center justify-content-between" style="margin-top: 2em;">
-                    <h2 class="sectionTitle">Dynamic Poster Rotation</h2>
-                </div>
-
-                <div class="verticalFormContainer">
-                    <div class="checkboxContainer checkboxContainer-withDescription">
-                        <label>
-                            <input is="emby-checkbox" type="checkbox" id="chkDynamicRotation" name="EnableDynamicRotation" />
-                            <span>Enable Dynamic Poster Rotation</span>
-                        </label>
-                        <div class="fieldDescription checkboxFieldDescription">
-                            Periodically rotate and generate fresh poster backgrounds for movies & shows.
-                        </div>
-                    </div>
-
-                    <div class="inputContainer">
-                        <label for="txtRotationInterval">Rotation Interval (Days)</label>
-                        <input is="emby-input" type="number" id="txtRotationInterval" name="RotationIntervalDays" class="emby-input" min="1" max="365" />
-                        <div class="fieldDescription">How often a new poster should be fetched and generated.</div>
-                    </div>
-                </div>
-
-                <div class="sectionTitleContainer flex align-items-center justify-content-between" style="margin-top: 2em;">
-                    <h2 class="sectionTitle">Poster Overlay Options</h2>
+                    <h2 class="sectionTitle">Poster Options</h2>
                 </div>
 
                 <div class="verticalFormContainer">
@@ -155,7 +106,7 @@
                     </div>
 
                     <button is="emby-button" type="submit" class="raised button-submit block emby-button">
-                        <span>Save Configuration</span>
+                        <span>Save</span>
                     </button>
                 </div>
             </form>
@@ -169,12 +120,6 @@
                     var page = this;
                     Dashboard.showLoadingMsg();
                     ApiClient.getPluginConfiguration(pluginUniqueId).then(function (config) {
-                        page.querySelector('#selectEngineMode').value = config.EngineMode || 'BtttrCc';
-                        page.querySelector('#txtTmdbApiKey').value = config.TmdbApiKey || '';
-                        page.querySelector('#txtFanartApiKey').value = config.FanartTvApiKey || '';
-                        page.querySelector('#chkDynamicRotation').checked = config.EnableDynamicRotation;
-                        page.querySelector('#txtRotationInterval').value = config.RotationIntervalDays || 7;
-
                         page.querySelector('#chkTrendTags').checked = config.EnableTrendTags;
                         page.querySelector('#chkQualityTags').checked = config.EnableQualityTags;
                         page.querySelector('#chkGenre').checked = config.EnableGenre;
@@ -192,12 +137,6 @@
                     var form = this;
                     Dashboard.showLoadingMsg();
                     ApiClient.getPluginConfiguration(pluginUniqueId).then(function (config) {
-                        config.EngineMode = form.querySelector('#selectEngineMode').value;
-                        config.TmdbApiKey = form.querySelector('#txtTmdbApiKey').value;
-                        config.FanartTvApiKey = form.querySelector('#txtFanartApiKey').value;
-                        config.EnableDynamicRotation = form.querySelector('#chkDynamicRotation').checked;
-                        config.RotationIntervalDays = parseInt(form.querySelector('#txtRotationInterval').value) || 7;
-
                         config.EnableTrendTags = form.querySelector('#chkTrendTags').checked;
                         config.EnableQualityTags = form.querySelector('#chkQualityTags').checked;
                         config.EnableGenre = form.querySelector('#chkGenre').checked;
