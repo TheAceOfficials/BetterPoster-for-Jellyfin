@@ -13,7 +13,7 @@
         "changelog": "V3.1.0 Release: Added Trakt Integration! You can now enter your btttr.cc user token in the plugin settings to enable watched progress overlays on series posters.",
         "targetAbi": "10.9.0.0",
         "sourceUrl": "https://github.com/TheAceOfficials/BetterPoster-for-Jellyfin/releases/download/v3.1.0/BtttrPosters.zip",
-        "checksum": "21CDCDB92987DF9C95AC284D906365B2",
+        "checksum": "9C3C28DA01B1B957246E02B8B2ECA9D1",
         "timestamp": "2026-06-15T12:00:00Z"
       },
       {
