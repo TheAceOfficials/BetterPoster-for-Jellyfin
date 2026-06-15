@@ -13,7 +13,7 @@
         "changelog": "V3.0.0 Release: Full btttr.cc integration. Added Trend Tags, Quality Tags, Genre Overlays, Ratings (IMDb, TMDB, RottenTomatoes etc), Age Ratings, and 18 Language translations.",
         "targetAbi": "10.9.0.0",
         "sourceUrl": "https://github.com/TheAceOfficials/BetterPoster-for-Jellyfin/releases/download/v3.0.0/BtttrPosters.zip",
-        "checksum": "B6E420146F3FA873BC0D7A68E15A1494",
+        "checksum": "C781A52C4979FE9605B89397E9DA00A9",
         "timestamp": "2026-06-15T00:00:00Z"
       },
       {
