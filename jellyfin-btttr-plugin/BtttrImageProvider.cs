@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Jellyfin.Data.Enums;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
@@ -19,120 +21,82 @@ namespace Jellyfin.Plugin.BtttrPosters
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<BtttrImageProvider> _logger;
+        private readonly IUserManager _userManager;
+        private readonly IUserDataManager _userDataManager;
+        private readonly ILibraryManager _libraryManager;
 
-        public BtttrImageProvider(IHttpClientFactory httpClientFactory, ILogger<BtttrImageProvider> logger)
+        public BtttrImageProvider(
+            IHttpClientFactory httpClientFactory,
+            ILogger<BtttrImageProvider> logger,
+            IUserManager userManager,
+            IUserDataManager userDataManager,
+            ILibraryManager libraryManager)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _userManager = userManager;
+            _userDataManager = userDataManager;
+            _libraryManager = libraryManager;
         }
 
         public string Name => "Btttr Posters";
+        public int Order => 0;
 
-        public int Order => 0; // Highest priority - displays as the first choice
-
-        public bool Supports(BaseItem item)
-        {
-            // Only movies and series (TV Shows) support custom poster overlays
-            return item is Movie || item is Series;
-        }
+        public bool Supports(BaseItem item) => item is Movie || item is Series;
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
-        {
-            return new[] { ImageType.Primary };
-        }
+            => new[] { ImageType.Primary };
 
         public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
             var images = new List<RemoteImageInfo>();
-            
-            // Extract the Identifier from Jellyfin's metadata item links
-            string? imdbId = item.GetProviderId(MetadataProvider.Imdb);
-            string? targetId = null;
-            string idType = "imdb";
+            var config = Plugin.Instance?.Configuration ?? new PluginConfiguration();
 
-            if (!string.IsNullOrEmpty(imdbId))
-            {
-                targetId = imdbId;
-                // Ensure IMDb ID starts with "tt" (normal IMDb format, e.g., tt10919420)
-                if (!targetId.StartsWith("tt", StringComparison.OrdinalIgnoreCase))
-                {
-                    targetId = "tt" + targetId;
-                }
-            }
-            else
-            {
-                bool fallback = Plugin.Instance?.Configuration?.FallbackToTmdbText ?? true;
-                if (fallback)
-                {
-                    string? tmdbId = item.GetProviderId(MetadataProvider.Tmdb);
-                    if (!string.IsNullOrEmpty(tmdbId))
-                    {
-                        targetId = tmdbId;
-                        idType = "tmdb";
-                    }
-                }
-            }
+            // --- Resolve ID ---
+            string? targetId = item.GetProviderId(MetadataProvider.Imdb);
+            if (!string.IsNullOrEmpty(targetId) && !targetId.StartsWith("tt", StringComparison.OrdinalIgnoreCase))
+                targetId = "tt" + targetId;
 
-            _logger.LogInformation("Processing Btttr Image Provider for item: {Name}", item.Name);
+            if (string.IsNullOrEmpty(targetId) && config.FallbackToTmdbText)
+                targetId = item.GetProviderId(MetadataProvider.Tmdb);
 
             if (string.IsNullOrEmpty(targetId))
             {
-                _logger.LogWarning("Btttr Image Provider: IMDB/TMDB ID not found for item: {Name}. Cannot fetch btttr.cc custom poster.", item.Name);
+                _logger.LogWarning("Btttr: No IMDB/TMDB ID for [{Name}]. Skipping.", item.Name);
                 return Task.FromResult<IEnumerable<RemoteImageInfo>>(images);
             }
 
-            var config = Plugin.Instance?.Configuration ?? new PluginConfiguration();
+            // --- Media type: "series" or "movie" ---
+            string mediaType = item is Movie ? "movie" : "series";
 
-            string suffix = config.EnableGenre switch
-            {
-                true when config.EnableRating => string.Empty,
-                false when config.EnableRating => "r",
-                true => "g",
-                false => "n"
-            };
+            // --- Overlay config segment ---
+            string overlayConfig = BuildOverlayConfig(config);
 
-            if (config.EnableQualityTags) suffix += "q";
-            if (config.EnableAgeRating) suffix += "a";
+            // --- Filename: poster (plain) or auto~s{w}o{t} / auto~w (progress) ---
+            string filename = BuildFilename(item, config);
 
-            string path = string.IsNullOrEmpty(suffix) ? "poster" : "poster-" + suffix;
-            
-            string imageId = Uri.EscapeDataString(targetId);
-            string token = config.BtttrToken?.Trim().Trim('~');
-            if (!string.IsNullOrEmpty(token))
-            {
-                // Note: The new btttr.cc API handles token via filename e.g. tt14681924~s3o5.jpg
-                // If it still expects the old path style for tokens, this can be adapted, 
-                // but usually the ~ suffix works directly on the ID.
-                imageId += $"~{token}";
-            }
+            // --- Assemble URL ---
+            // Format: https://btttr.cc/{overlayConfig}/{mediaType}/{imdbId}/{filename}.jpg
+            string btttrUrl = $"https://btttr.cc/{overlayConfig}/{mediaType}/{Uri.EscapeDataString(targetId)}/{filename}.jpg";
 
-            string btttrUrl = $"https://btttr.cc/{path}/{idType}/poster-default/{imageId}.jpg";
-
+            // --- Query params ---
             var queryParams = new List<string>();
 
             if (!config.EnableTrendTags)
-            {
                 queryParams.Add("tag=none");
-            }
 
-            string languageCode = GetLanguageCode(config.Language);
+            string? languageCode = GetLanguageCode(config.Language);
             if (!string.IsNullOrEmpty(languageCode))
-            {
                 queryParams.Add($"lang={Uri.EscapeDataString(languageCode)}");
-            }
 
-            string ratingSourceCode = GetRatingSourceCode(config.RatingSource);
-            if (config.EnableRating && !string.IsNullOrEmpty(ratingSourceCode))
-            {
-                queryParams.Add($"rs={Uri.EscapeDataString(ratingSourceCode)}");
-            }
+            string? ratingCode = GetRatingSourceCode(config.RatingSource);
+            if (config.EnableRating && !string.IsNullOrEmpty(ratingCode))
+                queryParams.Add($"rs={Uri.EscapeDataString(ratingCode)}");
 
             if (queryParams.Count > 0)
-            {
                 btttrUrl += "?" + string.Join("&", queryParams);
-            }
 
-            _logger.LogInformation("Generating Btttr.cc URL format: {Url}", btttrUrl);
+            _logger.LogInformation("Btttr URL for [{Name}]: {Url}", item.Name, btttrUrl);
 
             images.Add(new RemoteImageInfo
             {
@@ -145,53 +109,112 @@ namespace Jellyfin.Plugin.BtttrPosters
             return Task.FromResult<IEnumerable<RemoteImageInfo>>(images);
         }
 
+        /// <summary>
+        /// Builds the overlay config path segment based on enabled overlays.
+        /// e.g. "poster", "poster-q", "poster-gr", "poster-grq"
+        /// </summary>
+        private static string BuildOverlayConfig(PluginConfiguration config)
+        {
+            var parts = new System.Text.StringBuilder();
+            if (config.EnableGenre) parts.Append('g');
+            if (config.EnableRating) parts.Append('r');
+            if (config.EnableQualityTags) parts.Append('q');
+            if (config.EnableAgeRating) parts.Append('a');
+
+            return parts.Length > 0 ? "poster-" + parts : "poster";
+        }
+
+        /// <summary>
+        /// Builds the filename segment:
+        ///   "poster"          — no progress (default / 0 watched)
+        ///   "auto~s{w}o{t}"  — partially watched series
+        ///   "auto~w"          — fully watched (series or movie)
+        /// </summary>
+        private string BuildFilename(BaseItem item, PluginConfiguration config)
+        {
+            if (!config.EnableWatchProgress)
+                return "poster";
+
+            // Pick first admin user, fallback to first user
+            var user = _userManager.Users
+                .FirstOrDefault(u => u.HasPermission(PermissionKind.IsAdministrator))
+                ?? _userManager.Users.FirstOrDefault();
+
+            if (user == null)
+                return "poster";
+
+            // --- Movie ---
+            if (item is Movie)
+            {
+                var userData = _userDataManager.GetUserData(user, item);
+                return userData.Played ? "auto~w" : "poster";
+            }
+
+            // --- Series ---
+            if (item is Series series)
+            {
+                var episodes = _libraryManager.GetItemList(new InternalItemsQuery
+                {
+                    IncludeItemTypes = new[] { BaseItemKind.Episode },
+                    AncestorIds = new[] { series.Id },
+                    IsVirtualItem = false,
+                    Recursive = true
+                });
+
+                int total = episodes.Count;
+                if (total == 0) return "poster";
+
+                int watched = episodes.Count(ep => _userDataManager.GetUserData(user, ep).Played);
+
+                if (watched == 0) return "poster";
+                if (watched >= total) return "auto~w";
+                return $"auto~s{watched}o{total}";
+            }
+
+            return "poster";
+        }
+
         public Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Fetching custom poster from Btttr: {Url}", url);
+            _logger.LogInformation("Btttr: Fetching poster from {Url}", url);
             var client = _httpClientFactory.CreateClient(Name);
             return client.GetAsync(url, cancellationToken);
         }
 
-        private static string GetLanguageCode(PosterLanguage language)
+        private static string? GetLanguageCode(PosterLanguage language) => language switch
         {
-            return language switch
-            {
-                PosterLanguage.English => null,
-                PosterLanguage.Spanish => "es",
-                PosterLanguage.French => "fr",
-                PosterLanguage.German => "de",
-                PosterLanguage.PortugueseBrazil => "pt-BR",
-                PosterLanguage.PortuguesePortugal => "pt-PT",
-                PosterLanguage.Italian => "it",
-                PosterLanguage.Dutch => "nl",
-                PosterLanguage.Polish => "pl",
-                PosterLanguage.Russian => "ru",
-                PosterLanguage.Turkish => "tr",
-                PosterLanguage.Arabic => "ar",
-                PosterLanguage.Japanese => "ja",
-                PosterLanguage.Korean => "ko",
-                PosterLanguage.Chinese => "zh",
-                PosterLanguage.Hindi => "hi",
-                PosterLanguage.Swedish => "sv",
-                PosterLanguage.Czech => "cs",
-                _ => null
-            };
-        }
+            PosterLanguage.English => null,
+            PosterLanguage.Spanish => "es",
+            PosterLanguage.French => "fr",
+            PosterLanguage.German => "de",
+            PosterLanguage.PortugueseBrazil => "pt-BR",
+            PosterLanguage.PortuguesePortugal => "pt-PT",
+            PosterLanguage.Italian => "it",
+            PosterLanguage.Dutch => "nl",
+            PosterLanguage.Polish => "pl",
+            PosterLanguage.Russian => "ru",
+            PosterLanguage.Turkish => "tr",
+            PosterLanguage.Arabic => "ar",
+            PosterLanguage.Japanese => "ja",
+            PosterLanguage.Korean => "ko",
+            PosterLanguage.Chinese => "zh",
+            PosterLanguage.Hindi => "hi",
+            PosterLanguage.Swedish => "sv",
+            PosterLanguage.Czech => "cs",
+            _ => null
+        };
 
-        private static string GetRatingSourceCode(PosterRatingSource ratingSource)
+        private static string? GetRatingSourceCode(PosterRatingSource ratingSource) => ratingSource switch
         {
-            return ratingSource switch
-            {
-                PosterRatingSource.Average => null,
-                PosterRatingSource.Imdb => "IM",
-                PosterRatingSource.Tmdb => "TM",
-                PosterRatingSource.RottenTomatoes => "RT",
-                PosterRatingSource.Metacritic => "MC",
-                PosterRatingSource.Trakt => "TR",
-                PosterRatingSource.Letterboxd => "LB",
-                PosterRatingSource.RogerEbert => "RE",
-                _ => null
-            };
-        }
+            PosterRatingSource.Average => null,
+            PosterRatingSource.Imdb => "IM",
+            PosterRatingSource.Tmdb => "TM",
+            PosterRatingSource.RottenTomatoes => "RT",
+            PosterRatingSource.Metacritic => "MC",
+            PosterRatingSource.Trakt => "TR",
+            PosterRatingSource.Letterboxd => "LB",
+            PosterRatingSource.RogerEbert => "RE",
+            _ => null
+        };
     }
 }

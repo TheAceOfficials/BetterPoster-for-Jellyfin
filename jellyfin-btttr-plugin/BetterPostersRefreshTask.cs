@@ -38,13 +38,10 @@ namespace Jellyfin.Plugin.BtttrPosters
             _logger = logger;
         }
 
-        public string Name => "Refresh Btttr Posters";
-
+        public string Name => "BetterPoster - Refresh Posters";
         public string Key => "BtttrPostersRefresh";
-
         public string Description => "Automatically refreshes all Movie and TV Series posters from btttr.cc based on your current plugin settings and watch progress.";
-
-        public string Category => "Btttr Posters";
+        public string Category => "BetterPoster";
 
         /// <summary>
         /// Default trigger: every 24 hours.

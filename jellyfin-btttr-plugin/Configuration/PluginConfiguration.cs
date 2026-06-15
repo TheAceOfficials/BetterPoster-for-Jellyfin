@@ -48,6 +48,11 @@ namespace Jellyfin.Plugin.BtttrPosters.Configuration
         
         public bool FallbackToTmdbText { get; set; } = true;
         
-        public string BtttrToken { get; set; } = string.Empty;
+        /// <summary>
+        /// When enabled, reads watched episode data from Jellyfin and shows
+        /// a watch progress overlay on series posters (e.g. 3 of 5 watched).
+        /// Uses btttr.cc progress codes: auto~s3o5 (partial) or auto~w (fully watched).
+        /// </summary>
+        public bool EnableWatchProgress { get; set; } = false;
     }
 }

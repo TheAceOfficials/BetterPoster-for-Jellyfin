@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Jellyfin.Plugin.BtttrPosters")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("3.1.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("3.1.0.0+25cb05d5b35c63eeb6c88ee75d662d7f0990d68e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("3.1.0.0+ccbce0f24c118a4e37980ee6e54ce2b6dc87e69c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Jellyfin.Plugin.BtttrPosters")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Jellyfin.Plugin.BtttrPosters")]
 [assembly: System.Reflection.AssemblyVersionAttribute("3.1.0.0")]
