@@ -5,13 +5,14 @@
 </p>
 
 ![Jellyfin Plugin](https://img.shields.io/badge/Jellyfin-Plugin-blueviolet?style=for-the-badge&logo=jellyfin)
-![Version](https://img.shields.io/badge/Version-3.0.0-success?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.1.0-success?style=for-the-badge)
 
 **BetterPosters** is an automated metadata and image provider plugin for Jellyfin. It seamlessly integrates with [btttr.cc](https://btttr.cc) to fetch high-quality, premium custom posters for your Movies and TV Shows. These posters feature curated designs with highly customizable overlays, giving your library a polished and modern streaming-service aesthetic.
 
 ## ✨ Features
 
 * **Premium Poster Overlays:** Automatically fetches gorgeous, pre-styled posters featuring detailed badges and overlays.
+* **Trakt Watched Progress Integration:** Link your btttr.cc token to automatically display watched progress bars on TV Series posters!
 * **Fully Customizable:** Toggle Trend Tags (Trending, New, IMDb #3), Quality Tags (4K, Dolby Vision, Atmos), Genre, Ratings, and Age Ratings (PG-13, TV-MA, R) to your liking.
 * **Multiple Rating Sources:** Choose your preferred rating source including Average, IMDb, TMDB, Rotten Tomatoes, Metacritic, Trakt, Letterboxd, and Roger Ebert.
 * **18 Languages Supported:** Choose from a wide variety of languages for your poster text and badges (English, Hindi, Japanese, Spanish, French, German, and many more).

@@ -96,7 +96,17 @@ namespace Jellyfin.Plugin.BtttrPosters
 
             string path = string.IsNullOrEmpty(suffix) ? "poster" : "poster-" + suffix;
             
-            string btttrUrl = $"https://btttr.cc/{path}/{idType}/poster-default/{Uri.EscapeDataString(targetId)}.jpg";
+            string imageId = Uri.EscapeDataString(targetId);
+            string token = config.BtttrToken?.Trim().Trim('~');
+            if (!string.IsNullOrEmpty(token))
+            {
+                // Note: The new btttr.cc API handles token via filename e.g. tt14681924~s3o5.jpg
+                // If it still expects the old path style for tokens, this can be adapted, 
+                // but usually the ~ suffix works directly on the ID.
+                imageId += $"~{token}";
+            }
+
+            string btttrUrl = $"https://btttr.cc/{path}/{idType}/poster-default/{imageId}.jpg";
 
             var queryParams = new List<string>();
 

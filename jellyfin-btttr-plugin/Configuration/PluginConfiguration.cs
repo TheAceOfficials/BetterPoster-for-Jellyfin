@@ -47,5 +47,7 @@ namespace Jellyfin.Plugin.BtttrPosters.Configuration
         public PosterLanguage Language { get; set; } = PosterLanguage.English;
         
         public bool FallbackToTmdbText { get; set; } = true;
+        
+        public string BtttrToken { get; set; } = string.Empty;
     }
 }

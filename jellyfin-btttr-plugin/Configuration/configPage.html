@@ -105,6 +105,14 @@
                         </div>
                     </div>
 
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="txtBtttrToken">Btttr User Token (Trakt Integration)</label>
+                        <input is="emby-input" type="text" id="txtBtttrToken" name="BtttrToken" class="emby-input" />
+                        <div class="fieldDescription">
+                            Optional: Enter your unique btttr.cc user token (e.g. s3o5) to enable Trakt watched progress overlays.
+                        </div>
+                    </div>
+
                     <button is="emby-button" type="submit" class="raised button-submit block emby-button">
                         <span>Save</span>
                     </button>
@@ -128,6 +136,7 @@
                         page.querySelector('#chkAgeRating').checked = config.EnableAgeRating;
                         page.querySelector('#selectLanguage').value = config.Language || 'English';
                         page.querySelector('#chkFallback').checked = config.FallbackToTmdbText !== false;
+                        page.querySelector('#txtBtttrToken').value = config.BtttrToken || '';
                         Dashboard.hideLoadingMsg();
                     });
                 });
@@ -145,6 +154,7 @@
                         config.EnableAgeRating = form.querySelector('#chkAgeRating').checked;
                         config.Language = form.querySelector('#selectLanguage').value;
                         config.FallbackToTmdbText = form.querySelector('#chkFallback').checked;
+                        config.BtttrToken = form.querySelector('#txtBtttrToken').value;
 
                         ApiClient.updatePluginConfiguration(pluginUniqueId, config).then(function (result) {
                             Dashboard.hideLoadingMsg();
