@@ -4,11 +4,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Data.Enums;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
-using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
@@ -21,25 +19,16 @@ namespace Jellyfin.Plugin.BtttrPosters
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<BtttrImageProvider> _logger;
-        private readonly IUserManager _userManager;
-        private readonly IUserDataManager _userDataManager;
-        private readonly ILibraryManager _libraryManager;
+
+        public const string ClientName = "BtttrPosters";
 
         public BtttrImageProvider(
             IHttpClientFactory httpClientFactory,
-            ILogger<BtttrImageProvider> logger,
-            IUserManager userManager,
-            IUserDataManager userDataManager,
-            ILibraryManager libraryManager)
+            ILogger<BtttrImageProvider> logger)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
-            _userManager = userManager;
-            _userDataManager = userDataManager;
-            _libraryManager = libraryManager;
         }
-
-        public const string ClientName = "BtttrPosters";
 
         public string Name => "Btttr Posters";
         public int Order => 0;
@@ -52,69 +41,69 @@ namespace Jellyfin.Plugin.BtttrPosters
         public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
             var images = new List<RemoteImageInfo>();
-            var config = Plugin.Instance?.Configuration ?? new PluginConfiguration();
 
-            // --- Resolve ID ---
-            string? targetId = item.GetProviderId(MetadataProvider.Imdb);
-            if (!string.IsNullOrEmpty(targetId) && !targetId.StartsWith("tt", StringComparison.OrdinalIgnoreCase))
-                targetId = "tt" + targetId;
-
-            if (string.IsNullOrEmpty(targetId) && config.FallbackToTmdbText)
-                targetId = item.GetProviderId(MetadataProvider.Tmdb);
-
-            if (string.IsNullOrEmpty(targetId))
+            try
             {
-                _logger.LogWarning("Btttr: No IMDB/TMDB ID for [{Name}]. Skipping.", item.Name);
-                return Task.FromResult<IEnumerable<RemoteImageInfo>>(images);
+                var config = Plugin.Instance?.Configuration ?? new PluginConfiguration();
+
+                // --- Resolve ID ---
+                string? targetId = item.GetProviderId(MetadataProvider.Imdb);
+                if (!string.IsNullOrEmpty(targetId) && !targetId.StartsWith("tt", StringComparison.OrdinalIgnoreCase))
+                    targetId = "tt" + targetId;
+
+                if (string.IsNullOrEmpty(targetId) && config.FallbackToTmdbText)
+                    targetId = item.GetProviderId(MetadataProvider.Tmdb);
+
+                if (string.IsNullOrEmpty(targetId))
+                {
+                    _logger.LogWarning("Btttr: No IMDB/TMDB ID for [{Name}]. Skipping.", item.Name);
+                    return Task.FromResult<IEnumerable<RemoteImageInfo>>(images);
+                }
+
+                // --- Media type ---
+                string mediaType = item is Movie ? "movie" : "series";
+
+                // --- Overlay config segment ---
+                string overlayConfig = BuildOverlayConfig(config);
+
+                // --- Assemble URL ---
+                string btttrUrl = $"https://btttr.cc/{overlayConfig}/{mediaType}/{Uri.EscapeDataString(targetId)}/poster.jpg";
+
+                // --- Query params ---
+                var queryParams = new List<string>();
+
+                if (!config.EnableTrendTags)
+                    queryParams.Add("tag=none");
+
+                string? languageCode = GetLanguageCode(config.Language);
+                if (!string.IsNullOrEmpty(languageCode))
+                    queryParams.Add($"lang={Uri.EscapeDataString(languageCode)}");
+
+                string? ratingCode = GetRatingSourceCode(config.RatingSource);
+                if (config.EnableRating && !string.IsNullOrEmpty(ratingCode))
+                    queryParams.Add($"rs={Uri.EscapeDataString(ratingCode)}");
+
+                if (queryParams.Count > 0)
+                    btttrUrl += "?" + string.Join("&", queryParams);
+
+                _logger.LogInformation("Btttr URL for [{Name}]: {Url}", item.Name, btttrUrl);
+
+                images.Add(new RemoteImageInfo
+                {
+                    ProviderName = Name,
+                    Url = btttrUrl,
+                    ThumbnailUrl = btttrUrl,
+                    Type = ImageType.Primary
+                });
             }
-
-            // --- Media type: "series" or "movie" ---
-            string mediaType = item is Movie ? "movie" : "series";
-
-            // --- Overlay config segment ---
-            string overlayConfig = BuildOverlayConfig(config);
-
-            // --- Filename: poster (plain) or auto~s{w}o{t} / auto~w (progress) ---
-            string filename = BuildFilename(item, config);
-
-            // --- Assemble URL ---
-            // Format: https://btttr.cc/{overlayConfig}/{mediaType}/{imdbId}/{filename}.jpg
-            string btttrUrl = $"https://btttr.cc/{overlayConfig}/{mediaType}/{Uri.EscapeDataString(targetId)}/{filename}.jpg";
-
-            // --- Query params ---
-            var queryParams = new List<string>();
-
-            if (!config.EnableTrendTags)
-                queryParams.Add("tag=none");
-
-            string? languageCode = GetLanguageCode(config.Language);
-            if (!string.IsNullOrEmpty(languageCode))
-                queryParams.Add($"lang={Uri.EscapeDataString(languageCode)}");
-
-            string? ratingCode = GetRatingSourceCode(config.RatingSource);
-            if (config.EnableRating && !string.IsNullOrEmpty(ratingCode))
-                queryParams.Add($"rs={Uri.EscapeDataString(ratingCode)}");
-
-            if (queryParams.Count > 0)
-                btttrUrl += "?" + string.Join("&", queryParams);
-
-            _logger.LogInformation("Btttr URL for [{Name}]: {Url}", item.Name, btttrUrl);
-
-            images.Add(new RemoteImageInfo
+            catch (Exception ex)
             {
-                ProviderName = Name,
-                Url = btttrUrl,
-                ThumbnailUrl = btttrUrl,
-                Type = ImageType.Primary
-            });
+                _logger.LogError(ex, "Btttr: Error building image URL for [{Name}]", item.Name);
+            }
 
             return Task.FromResult<IEnumerable<RemoteImageInfo>>(images);
         }
 
-        /// <summary>
-        /// Builds the overlay config path segment based on enabled overlays.
-        /// e.g. "poster", "poster-q", "poster-gr", "poster-grq"
-        /// </summary>
         private static string BuildOverlayConfig(PluginConfiguration config)
         {
             var parts = new System.Text.StringBuilder();
@@ -124,56 +113,6 @@ namespace Jellyfin.Plugin.BtttrPosters
             if (config.EnableAgeRating) parts.Append('a');
 
             return parts.Length > 0 ? "poster-" + parts : "poster";
-        }
-
-        /// <summary>
-        /// Builds the filename segment:
-        ///   "poster"          — no progress (default / 0 watched)
-        ///   "auto~s{w}o{t}"  — partially watched series
-        ///   "auto~w"          — fully watched (series or movie)
-        /// </summary>
-        private string BuildFilename(BaseItem item, PluginConfiguration config)
-        {
-            if (!config.EnableWatchProgress)
-                return "poster";
-
-            // Pick first admin user, fallback to first user
-            var user = _userManager.Users
-                .FirstOrDefault(u => u.HasPermission(PermissionKind.IsAdministrator))
-                ?? _userManager.Users.FirstOrDefault();
-
-            if (user == null)
-                return "poster";
-
-            // --- Movie ---
-            if (item is Movie)
-            {
-                var userData = _userDataManager.GetUserData(user, item);
-                return userData.Played ? "auto~w" : "poster";
-            }
-
-            // --- Series ---
-            if (item is Series series)
-            {
-                var episodes = _libraryManager.GetItemList(new InternalItemsQuery
-                {
-                    IncludeItemTypes = new[] { BaseItemKind.Episode },
-                    AncestorIds = new[] { series.Id },
-                    IsVirtualItem = false,
-                    Recursive = true
-                });
-
-                int total = episodes.Count;
-                if (total == 0) return "poster";
-
-                int watched = episodes.Count(ep => _userDataManager.GetUserData(user, ep).Played);
-
-                if (watched == 0) return "poster";
-                if (watched >= total) return "auto~w";
-                return $"auto~s{watched}o{total}";
-            }
-
-            return "poster";
         }
 
         public Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
