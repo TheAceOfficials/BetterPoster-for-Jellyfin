@@ -39,6 +39,8 @@ namespace Jellyfin.Plugin.BtttrPosters
             _libraryManager = libraryManager;
         }
 
+        public const string ClientName = "BtttrPosters";
+
         public string Name => "Btttr Posters";
         public int Order => 0;
 
@@ -177,7 +179,7 @@ namespace Jellyfin.Plugin.BtttrPosters
         public Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Btttr: Fetching poster from {Url}", url);
-            var client = _httpClientFactory.CreateClient(Name);
+            var client = _httpClientFactory.CreateClient(ClientName);
             return client.GetAsync(url, cancellationToken);
         }
 
