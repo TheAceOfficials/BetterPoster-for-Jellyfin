@@ -1557,10 +1557,12 @@
         "targetAlias": "net8.0",
         "dependencies": {
           "Jellyfin.Controller": {
+            "suppressParent": "All",
             "target": "Package",
             "version": "[10.9.0, )"
           },
           "Jellyfin.Model": {
+            "suppressParent": "All",
             "target": "Package",
             "version": "[10.9.0, )"
           }

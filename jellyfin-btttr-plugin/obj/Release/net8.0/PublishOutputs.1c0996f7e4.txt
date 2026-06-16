@@ -1,16 +1,3 @@
 F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Jellyfin.Plugin.BtttrPosters.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Jellyfin.Plugin.BtttrPosters.deps.json
 F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Jellyfin.Plugin.BtttrPosters.pdb
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Diacritics.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\ICU4N.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\ICU4N.Transliterator.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\J2N.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\MediaBrowser.Common.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\MediaBrowser.Controller.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Jellyfin.Data.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Jellyfin.Extensions.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\MediaBrowser.Model.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Emby.Naming.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Microsoft.Extensions.Configuration.Binder.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Microsoft.Extensions.Logging.Abstractions.dll
+F:\Antigravity\Plugins\BetterPoster - Jellyfin\jellyfin-btttr-plugin\FinalPublishFolder\Jellyfin.Plugin.BtttrPosters.deps.json
