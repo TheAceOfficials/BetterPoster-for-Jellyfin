@@ -50,14 +50,7 @@ namespace Jellyfin.Plugin.BtttrPosters
         /// </summary>
         public IEnumerable<TaskTriggerInfo> GetDefaultTriggers()
         {
-            return new[]
-            {
-                new TaskTriggerInfo
-                {
-                    Type = TaskTriggerInfo.TriggerInterval,
-                    IntervalTicks = TimeSpan.FromHours(24).Ticks
-                }
-            };
+            return System.Array.Empty<TaskTriggerInfo>();
         }
 
         public async Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
