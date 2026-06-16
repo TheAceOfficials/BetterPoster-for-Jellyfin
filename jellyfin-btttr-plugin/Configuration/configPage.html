@@ -125,6 +125,7 @@
 
         <script type="text/javascript">
             (function () {
+                // This GUID must match Plugin.Id in Plugin.cs
                 var pluginUniqueId = 'b1ea6fb2-e42a-4632-841f-82ffba8307db';
 
                 document.querySelector('#BtttrPostersConfigPage').addEventListener('pageshow', function () {
@@ -140,6 +141,8 @@
                         page.querySelector('#selectLanguage').value = config.Language || 'English';
                         page.querySelector('#chkFallback').checked = config.FallbackToTmdbText !== false;
                         page.querySelector('#chkWatchProgress').checked = config.EnableWatchProgress === true;
+                        Dashboard.hideLoadingMsg();
+                    }).catch(function () {
                         Dashboard.hideLoadingMsg();
                     });
                 });
@@ -161,12 +164,13 @@
 
                         ApiClient.updatePluginConfiguration(pluginUniqueId, config).then(function (result) {
                             Dashboard.hideLoadingMsg();
-                            if (window.Dashboard && Dashboard.processServerConfigurationUpdateResult) {
-                                Dashboard.processServerConfigurationUpdateResult(result);
-                            }
-                        }).catch(function() {
+                            Dashboard.alert('Settings saved.');
+                        }).catch(function () {
                             Dashboard.hideLoadingMsg();
+                            Dashboard.alert('Error saving settings.');
                         });
+                    }).catch(function () {
+                        Dashboard.hideLoadingMsg();
                     });
                 });
             })();

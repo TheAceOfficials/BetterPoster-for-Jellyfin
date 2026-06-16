@@ -16,6 +16,9 @@ namespace Jellyfin.Plugin.BtttrPosters
             Instance = this;
         }
 
+        // This name is what Jellyfin uses to look up the config page.
+        // The page URL will be: /web/configurationpage?name=Btttr+Posters
+        // The PluginPageInfo.Name MUST match this exactly.
         public override string Name => "Btttr Posters";
 
         public override Guid Id => Guid.Parse("b1ea6fb2-e42a-4632-841f-82ffba8307db");
@@ -28,9 +31,9 @@ namespace Jellyfin.Plugin.BtttrPosters
             {
                 new PluginPageInfo
                 {
-                    // This name MUST match what Jellyfin requests in the URL:
-                    // /web/configurationpage?name=Btttr+Posters+Configuration
-                    Name = this.Name + " Configuration",
+                    // CRITICAL: Name here must match Plugin.Name exactly.
+                    // Do NOT append " Configuration" — that breaks the settings page load.
+                    Name = Name,
                     EmbeddedResourcePath = $"{GetType().Namespace}.Configuration.configPage.html"
                 }
             };
